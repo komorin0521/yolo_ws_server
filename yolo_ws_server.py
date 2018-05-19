@@ -83,7 +83,8 @@ class YoloWsServer(object):
                 StringIO.StringIO(img_data)).convert("RGB"))
             yolo_results = self._yolo.predict(img)
             img = self._yolo.draw_detections(img, yolo_results)
-            _, buf = cv2.imencode(".png", img)
+            cv2_img = img[:, :, ::-1].copy()
+            _, buf = cv2.imencode(".png", cv2_img)
             pred_img_data = base64.b64encode(buf)
             server.send_message(client, pred_img_data)
         except Exception as err:
